@@ -90,7 +90,7 @@ class AdminMultiFeature extends AdminTab {
                 foreach ($list_features as $feat) {
                     if ($feat['custom'] == 0) {
                         $this->_html = "";
-                        $this->_html = '<input type="checkbox" style="margin-left:20px;"';
+                        $this->_html = '<input type="checkbox"';
                         foreach ($product_features as $product_feature) {
                             if ($product_feature['id_feature_value'] == $feat['id_feature_value']) {
                                 $this->_html .= 'checked="checked"';
@@ -119,7 +119,10 @@ class AdminMultiFeature extends AdminTab {
                                     foreach ($languages as $language){
                                         if($val['id_lang'] == $language['id_lang']){
                                             $this->_html .='<div id="txtfeature'.$feat['id_feature'].'_'.$language['id_lang'].'" style="display: '.($language['id_lang'] == $id_lang_default ? 'block' : 'none').';">';
-                                            $this->_html .='<input type="text" name="txtfeature_'.$feat['id_feature'].'[' . $language['id_lang'] . ']" size="64" value="'.$val['value'].'" />';
+                                            //$this->_html .='<input type="text" name="txtfeature_'.$feat['id_feature'].'[' . $language['id_lang'] . ']" value="'.$val['value'].'" />';
+                                            $this->_html .='<textarea  name="txtfeature_'.$feat['id_feature'].'[' . $language['id_lang'] . ']" >';
+                                            $this->_html .=$val['value'];
+                                            $this->_html .='</textarea>';
                                             $this->_html .= '</div>' ;
                                         }
                                     }
