@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<module>
+	<name>quadramultifeature</name>
+	<displayName><![CDATA[Configurateur des caract&eacute;ristiques des produits]]></displayName>
+	<version><![CDATA[1.1]]></version>
+	<description><![CDATA[Permet d&#039;ajouter plusieurs valeurs pour le m&ecirc;me caract&eacute;ristique d&#039;un produit]]></description>
+	<author><![CDATA[Quadra Informatique]]></author>
+	<tab><![CDATA[quadra]]></tab>
+	<is_configurable>0</is_configurable>
+	<need_instance>1</need_instance>
+	<limited_countries></limited_countries>
+</module>
