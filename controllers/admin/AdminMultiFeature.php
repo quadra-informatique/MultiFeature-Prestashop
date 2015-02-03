@@ -45,8 +45,9 @@ class AdminMultiFeatureController extends ModuleAdminController
 	function renderForm($token = NULL)
 	{
 
+		$this->context = Context::getContext();
 		global $currentIndex, $cookie;
-		
+
 
 		//$obj object courant =>product on which we clicks
 		if (!($obj = $this->loadObject(true)))
@@ -72,8 +73,13 @@ class AdminMultiFeatureController extends ModuleAdminController
 			}
 			$test .= $its;
 		}
+		foreach ($features as $feature)
+		{
+			
+		}
 		$idents = substr($test, 0, strrpos($test, "¤"));
-$this->_html = '<div class="panel col-lg-12">';
+
+		$this->_html = '<div class="panel col-lg-12">';
 		$this->_html .= '
             <form action="'.$currentIndex.'&submitAddMultiFeature=1&token='.Tools::getValue('token').'" method="post" enctype="multipart/form-data" name="product" id="product">
             <input type="hidden" name="idProduct" id="idProduct" value="'.$obj->id.'" />';
@@ -82,12 +88,12 @@ $this->_html = '<div class="panel col-lg-12">';
             <table class="table">
 			<thead>
             <tr><th>'.$this->l('Caracteristics').'</th><th>'.$this->l('Defined values').'</th></tr>'
-				. '</thead><tbody>';
+				.'</thead><tbody>';
 		if ($features)
 			foreach ($features as $feature)
 			{
 				$this->_html .=
-				'<tr>
+						'<tr>
                          <td class="col-left">'.$feature['name'].'<br/></td>
                          <td>
                          <div id="divMultifeatures">';
@@ -101,7 +107,7 @@ $this->_html = '<div class="panel col-lg-12">';
 				{
 					if ($feat['custom'] == 0)
 					{
-						
+
 						$this->_html .= '<input type="checkbox"';
 						foreach ($product_features as $product_feature)
 						{
@@ -125,18 +131,26 @@ $this->_html = '<div class="panel col-lg-12">';
 						//echo $this->_html;
 					} else
 					{
+						$asValue = false;
+
 						foreach ($product_features as $product_feature)
 						{
+
+
 							if ($product_feature['id_feature_value'] == $feat['id_feature_value'])
 							{
+								$asValue = true;
 								//$this->_html = "";
 								$carac = $this->getValueFeat($product_feature['id_feature_value']);
-								foreach ($carac as $k => $val)
+
+								foreach ($languages as $language)
 								{
-									foreach ($languages as $language)
+									$asLangValue = false;
+									foreach ($carac as $k => $val)
 									{
 										if ($val['id_lang'] == $language['id_lang'])
 										{
+											$asLangValue = true;
 											$this->_html .='<div id="txtfeature'.$feat['id_feature'].'_'.$language['id_lang'].'" style="display: '.($language['id_lang'] == $id_lang_default ? 'block' : 'none').';">';
 											//$this->_html .='<input type="text" name="txtfeature_'.$feat['id_feature'].'[' . $language['id_lang'] . ']" value="'.$val['value'].'" />';
 											$this->_html .='<textarea  name="txtfeature_'.$feat['id_feature'].'['.$language['id_lang'].']" >';
@@ -145,12 +159,38 @@ $this->_html = '<div class="panel col-lg-12">';
 											$this->_html .= '</div>';
 										}
 									}
+									if (!$asLangValue)
+									{
+										$this->_html .='<div id="txtfeature'.$feat['id_feature'].'_'.$language['id_lang'].'" style="display: '.($language['id_lang'] == $id_lang_default ? 'block' : 'none').';">';
+										//$this->_html .='<input type="text" name="txtfeature_'.$feat['id_feature'].'[' . $language['id_lang'] . ']" value="'.$val['value'].'" />';
+										$this->_html .='<textarea  name="txtfeature_'.$feat['id_feature'].'['.$language['id_lang'].']" >';
+										//$this->_html .=$val['value'];
+										$this->_html .='</textarea>';
+										$this->_html .= '</div>';
+									}
 								}
+
 								$this->_html .= $this->displayFlags($languages, $id_lang_default, $idents, 'txtfeature'.$feat['id_feature'], true);
 								//echo $this->_html;
 							}
 						}
 					}
+				}
+				if (!$asValue && $feat['custom'] == 1)
+				{
+
+					foreach ($languages as $language)
+					{
+
+						$this->_html .='<div id="txtfeature'.$feat['id_feature'].'_'.$language['id_lang'].'" style="display: '.($language['id_lang'] == $id_lang_default ? 'block' : 'none').';">';
+						//$this->_html .='<input type="text" name="txtfeature_'.$feat['id_feature'].'[' . $language['id_lang'] . ']" value="'.$val['value'].'" />';
+						$this->_html .='<textarea  name="txtfeature_'.$feat['id_feature'].'['.$language['id_lang'].']" >';
+						//$this->_html .=$val['value'];
+						$this->_html .='</textarea>';
+						$this->_html .= '</div>';
+					}
+
+					$this->_html .= $this->displayFlags($languages, $id_lang_default, 'txtfeature'.$feat['id_feature'].'¤', 'txtfeature'.$feat['id_feature'], true);
 				}
 				$this->_html .= '</div>
                         </td>
@@ -180,6 +220,28 @@ $this->_html = '<div class="panel col-lg-12">';
 			return $query;
 		else
 			return NULL;
+	}
+
+	public function displayFlags($languages, $default_language, $ids, $id, $return = false, $use_vars_instead_of_ids = false)
+	{
+		if (count($languages) == 1)
+			return false;
+		$output = '
+		<div class="displayed_flag">
+			<img src="../img/l/'.$default_language.'.jpg" class="pointer" id="language_current_'.$id.'" onclick="toggleLanguageFlags(this);" alt="" />
+		</div>
+		<div id="languages_'.$id.'" class="language_flags">
+			'.$this->l('Choose language:').'<br /><br />';
+		foreach ($languages as $language)
+			if ($use_vars_instead_of_ids)
+				$output .= '<img src="../img/l/'.(int)($language['id_lang']).'.jpg" class="pointer" alt="'.$language['name'].'" title="'.$language['name'].'" onclick="changeLanguage(\''.$id.'\', '.$ids.', '.$language['id_lang'].', \''.$language['iso_code'].'\');" /> ';
+			else
+				$output .= '<img src="../img/l/'.(int)($language['id_lang']).'.jpg" class="pointer" alt="'.$language['name'].'" title="'.$language['name'].'" onclick="changeLanguage(\''.$id.'\', \''.$ids.'\', '.$language['id_lang'].', \''.$language['iso_code'].'\');" /> ';
+		$output .= '</div>';
+
+		if ($return)
+			return $output;
+		echo $output;
 	}
 
 	/**
@@ -375,13 +437,14 @@ $this->_html = '<div class="panel col-lg-12">';
 	 */
 	public function getCustomValue($id_feature, $id_feature_value)
 	{
+		if ((int)$id_feature && (int)$id_feature_value)
+		{
+			$query = Db::getInstance()->getValue('SELECT `custom` FROM '._DB_PREFIX_.'feature_value WHERE `id_feature`='.$id_feature.' AND `id_feature_value`='.$id_feature_value);
 
-		$query = Db::getInstance()->getValue('SELECT `custom` FROM '._DB_PREFIX_.'feature_value WHERE `id_feature`='.$id_feature.' AND `id_feature_value`='.$id_feature_value);
-
-		if (isset($query))
-			return $query;
-		else
-			return NULL;
+			if (isset($query))
+				return $query;
+		}
+		return NULL;
 	}
 
 }
