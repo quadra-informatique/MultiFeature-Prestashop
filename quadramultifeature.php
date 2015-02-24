@@ -24,7 +24,7 @@ class QuadraMultiFeature extends Module
 		$this->name = 'quadramultifeature';
 		$this->author = 'Quadra Informatique';
 		$this->tab = 'quadra';
-		$this->version = 1.1;
+		$this->version = 1.2;
 
 		parent::__construct();
 

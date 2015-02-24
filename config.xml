@@ -2,7 +2,7 @@
 <module>
 	<name>quadramultifeature</name>
 	<displayName><![CDATA[Configure caracteristics for products]]></displayName>
-	<version><![CDATA[1.1]]></version>
+	<version><![CDATA[1.2]]></version>
 	<description><![CDATA[Add several value for the same caracteristic of a product]]></description>
 	<author><![CDATA[Quadra Informatique]]></author>
 	<tab><![CDATA[quadra]]></tab>
