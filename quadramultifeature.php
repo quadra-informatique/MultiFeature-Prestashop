@@ -1,19 +1,24 @@
 <?php
-
-/*
- * 1997-2012 Quadra Informatique
+/**
+ * ---------------------------------------------------------------------------------
+ *
+ * 1997-2015 Quadra Informatique
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the Open Software License (OSL 3.0) that is available
- * through the world-wide-web at this URL: http://www.opensource.org/licenses/OSL-3.0
- * If you are unable to obtain it through the world-wide-web, please send an email
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
  * to ecommerce@quadra-informatique.fr so we can send you a copy immediately.
  *
- *  @author Quadra Informatique SARL <ecommerce@quadra-informatique.fr>
- *  @copyright 1997-2012 Quadra Informatique
- *  @version Release: $Revision: 1.0 $
- *  @license http://www.opensource.org/licenses/OSL-3.0  Open Software License (OSL 3.0)
+ * @author    Quadra Informatique <ecommerce@quadra-informatique.fr>
+ * @copyright 1997-2015 Quadra Informatique
+ * @version Release: $Revision: 1.2.0 $
+ * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ *
+ * ---------------------------------------------------------------------------------
  */
 
 class QuadraMultiFeature extends Module
@@ -23,8 +28,8 @@ class QuadraMultiFeature extends Module
 	{
 		$this->name = 'quadramultifeature';
 		$this->author = 'Quadra Informatique';
-		$this->tab = 'quadra';
-		$this->version = 1.2;
+		$this->tab = 'administration';
+		$this->version = '1.2.0';
 
 		parent::__construct();
 
@@ -32,63 +37,50 @@ class QuadraMultiFeature extends Module
 		$this->description = $this->l('Add several value for the same caracteristic of a product');
 	}
 
-	function install()
+	public function install()
 	{
 		$id_lang_en = LanguageCore::getIdByIso('en');
 		$id_lang_fr = LanguageCore::getIdByIso('fr');
-		$this->installModuleTab('AdminMultiFeature', array($id_lang_fr => 'Caractéristiques multiples', $id_lang_en => 'Multi features'), 9);
-		/* $tab = new Tab();
-		  $tab->id_parent = 9; // orders Tab
-		  $tab->name = array(Language::getIdByIso('fr') => 'Caractéristiques multiples');
-
-		  $tab->class_name = 'AdminMultiFeature';
-		  $tab->module = 'quadramultifeature';
-		  $tab->add(); */
-
+		$this->installModuleTab('AdminMultifeature', array($id_lang_fr => 'Caractéristiques multiples', $id_lang_en => 'Multi features'), 9);
 		$query = 'ALTER TABLE '._DB_PREFIX_.'feature_product DROP PRIMARY KEY ,
         ADD PRIMARY KEY ( `id_feature` , `id_product` , `id_feature_value` )';
 
-		/* $query2 = 'ALTER TABLE '._DB_PREFIX_ .'feature_product DROP INDEX `id_feature_value`'; */
-
-		if (!Db::getInstance()->Execute($query) /* || !Db::getInstance()->Execute($query2) */)
+		if (!Db::getInstance()->Execute($query))
 			return false;
-
 		if (parent::install() == false)
 			return false;
-
 		return true;
 	}
 
-	private function installModuleTab($tabClass, $tabName, $idTabParent)
+	private function installModuleTab($tab_class, $tab_name, $id_tab_parent)
 	{
 		$tab = new Tab();
-		$tab->name = $tabName;
-		$tab->class_name = $tabClass;
+		$tab->name = $tab_name;
+		$tab->class_name = $tab_class;
 		$tab->module = $this->name;
-		$tab->id_parent = (int)($idTabParent);
+		$tab->id_parent = (int)$id_tab_parent;
 		if (!$tab->save())
 			return false;
 		return true;
 	}
 
-	private function uninstallModuleTab($tabClass)
+	private function uninstallModuleTab($tab_class)
 	{
-		$idTab = Tab::getIdFromClassName($tabClass);
-		if ($idTab != 0)
+		$id_tab = Tab::getIdFromClassName($tab_class);
+		if ($id_tab != 0)
 		{
-			$tab = new Tab($idTab);
+			$tab = new Tab($id_tab);
 			$tab->delete();
 			return true;
 		}
 		return false;
 	}
 
-	function uninstall()
+	public function uninstall()
 	{
-		$this->uninstallModuleTab('AdminMultiFeature');
+		$this->uninstallModuleTab('AdminMultifeature');
 		if (!parent::uninstall())
 			return false;
 		return true;
 	}
-
 }
