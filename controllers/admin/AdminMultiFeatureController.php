@@ -132,7 +132,7 @@ class AdminMultifeatureController extends ModuleAdminController
 								foreach ($languages as $language)
 								{
 									$as_lang_value = false;
-									foreach ($carac as $k => $val)
+									foreach ($carac as $val)
 									{
 										if ($val['id_lang'] == $language['id_lang'])
 										{
@@ -254,7 +254,7 @@ class AdminMultifeatureController extends ModuleAdminController
 			$product->deleteFeatures();
 			$features = Db::getInstance()->executeS('SELECT `id_feature` FROM `'._DB_PREFIX_.'feature`');
 
-			foreach ($features as $k => $id)
+			foreach ($features as $id)
 			{
 				//customized values
 				$text_feature = Tools::getValue('txtfeature_'.$id['id_feature']);
