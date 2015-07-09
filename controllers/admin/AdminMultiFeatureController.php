@@ -269,7 +269,7 @@ class AdminMultifeatureController extends ModuleAdminController
 				$id_feature_values = Tools::getValue('feature_value_'.$id['id_feature']);
 				if (!empty($id_feature_values))
 				{
-					foreach ($id_feature_values as $k => $id_feature_value)
+					foreach ($id_feature_values as $id_feature_value)
 						$this->addFeatureToProduct($id['id_feature'], $id_product, $id_feature_value);
 				}
 			}
