@@ -20,6 +20,11 @@
  *
  * ---------------------------------------------------------------------------------
  */
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+require_once _PS_MODULE_DIR_.'quadramultifeature/classes/QiMultiFeatureApi.php';
+
 
 class QuadraMultiFeature extends Module
 {
@@ -29,7 +34,7 @@ class QuadraMultiFeature extends Module
 		$this->name = 'quadramultifeature';
 		$this->author = 'Quadra Informatique';
 		$this->tab = 'administration';
-		$this->version = '1.2.0';
+		$this->version = '1.3.0';
 
 		parent::__construct();
 
